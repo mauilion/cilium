@@ -123,6 +123,9 @@ var (
 		"nativeRoutingCIDR":      NativeRoutingCIDR,
 
 		"ipam.operator.clusterPoolIPv6PodCIDR": "fd02::/112",
+
+		// To enable SA for both KPR disabled and !strict
+		"sessionAffinity": "true",
 	}
 
 	eksChainingHelmOverrides = map[string]string{

@@ -27,8 +27,11 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
-      {{- if .Values.hubble.ui.securityContext.enabled }}
+      {{- with .Values.hubble.ui.podSecurityContext }}
       securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.hubble.ui.securityContext.enabled }}
         runAsUser: 1001
       {{- end }}
       priorityClassName: {{ .Values.hubble.ui.priorityClassName }}
@@ -50,6 +53,10 @@ spec:
       - name: frontend
         image: {{ include "cilium.image" .Values.hubble.ui.frontend.image | quote }}
         imagePullPolicy: {{ .Values.hubble.ui.frontend.image.pullPolicy }}
+        {{- with .Values.hubble.ui.frontend.SecurityContext }}
+        securityContext:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
         ports:
         - name: http
           containerPort: 8080
@@ -60,6 +67,10 @@ spec:
       - name: backend
         image: {{ include "cilium.image" .Values.hubble.ui.backend.image | quote }}
         imagePullPolicy: {{ .Values.hubble.ui.backend.image.pullPolicy }}
+        {{- with .Values.hubble.ui.backend.SecurityContext }}
+        securityContext:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
         env:
         - name: EVENTS_SERVER_PORT
           value: "8090"
@@ -96,6 +107,10 @@ spec:
       - name: proxy
         image: {{ include "cilium.image" .Values.hubble.ui.proxy.image | quote }}
         imagePullPolicy: {{ .Values.hubble.ui.proxy.image.pullPolicy }}
+        {{- with .Values.hubble.ui.proxy.SecurityContext }}
+        securityContext:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
         ports:
         - name: http
           containerPort: 8081
